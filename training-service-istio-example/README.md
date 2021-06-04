@@ -1,11 +1,11 @@
-# Istio Distributed Tracing - Fuse Booster
+# Istio Distributed Tracing - Fuse Demo
 
 ## Overview
 
 The Fuse Istio Distributed Tracing booster demonstrates Istio’s Distributed Tracing via a (minimally) instrumented set of Apache Camel/Spring Boot applications:
 
-* A _name service_ that returns a name to greet.
-* A _greeting service_ that invokes the name service to get a name and then returns the `Hello, NAME` string.
+* A _user-api-service_ that returns a response from training service with the help of so-called db operations.
+* A _db-interaction-service_ that stores the data and helps us with some storage operations.
 
 When you run this booster, it injects Istio envoy proxy sidecars containers and both applications become part of a "service mesh". Istio automatically gathers tracing information by following the flow of a request across the services.
 
@@ -125,19 +125,19 @@ To deploy this booster to a running single-node OpenShift cluster:
 
     oc -n fuse-test create -f <path_to_copied_project_from_git>/greeting-service-istio-example/istio/deploy/istio-cni.yaml
 
-**Step-5:** Change directory to `name-service`
+**Step-5:** Change directory to `db-interaction-service`
 
-    cd /home/kodtodya/_my-space/_system/_codeBase/istio-examples/greeting-service-istio-example/name-service
+    cd /home/kodtodya/_my-space/_system/_codeBase/istio-examples/training-service-istio-example/db-interaction-service
 
-**Step-6:** Deploy `name-service` to `fuse-test`
+**Step-6:** Deploy `db-interaction-service` to `fuse-test`
 
     mvn clean package oc:deploy -P fuse-test
 
-**Step-7:** Change directory to `greetings-service`
+**Step-7:** Change directory to `user-api-service`
 
-    cd /home/kodtodya/_my-space/_system/_codeBase/istio-examples/greeting-service-istio-example/greetings-service
+    cd /home/kodtodya/_my-space/_system/_codeBase/istio-examples/training-service-istio-example/user-api-service
 
-**Step-8:** Deploy `greetings-service` to `fuse-test`
+**Step-8:** Deploy `user-api-service` to `fuse-test`
 
     mvn clean package oc:deploy -P fuse-test
 
@@ -145,13 +145,13 @@ To deploy this booster to a running single-node OpenShift cluster:
 
     oc label namespace fuse-test istio-injection=enabled
 
-**Step-10:** Increase the number of pods for `name-service` and `greetings-service`
+**Step-10:** Increase the number of pods for `db-interaction-service` and `user-api-service`
 
-    oc scale dc/name-service --replicas=0
-    oc scale dc/greetings-service --replicas=0
+    oc scale dc/db-interaction-service --replicas=0
+    oc scale dc/user-api-service --replicas=0
 
-    oc scale dc/name-service --replicas=2
-    oc scale dc/greetings-service --replicas=2
+    oc scale dc/db-interaction-service --replicas=2
+    oc scale dc/user-api-service --replicas=2
 
 ## Observability
 
@@ -241,4 +241,4 @@ OR
 
 ## Run your services
 
-open is browser ->  http://greetings-service-fuse-test.apps-crc.testing/greetings
+open is browser ->  http://user-api-service-fuse-test.apps-crc.testing/
